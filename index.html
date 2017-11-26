@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.js"></script>
+    <title>原生js实现懒加载</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            text-decoration: none;
+            box-sizing: border-box;
+        }
+
+        clearfix:after {
+            content: '';
+            overflow: visible;
+        }
+
+        #app ul {
+            width: 100%;
+        }
+
+        #app li {
+            width: 100%;
+            margin: auto;
+        }
+
+        #app ul li img {
+            width: 100%;
+            /*height: 60vw;*/
+        }
+
+        #app .info {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <div class="list">
+        <ul>
+        </ul>
+    </div>
+</div>
+<script>
+    //封装ajax
+    var ajax = function (opt) {
+        var url = opt.url
+        var method = opt.method || "GET"
+        var success = opt.success
+        var sendData = opt.sendData
+
+        var xhr = new XMLHttpRequest()
+        xhr.open(method, opt.url)
+        xhr.onload = function () {
+            if (xhr.readyState === 4) {
+                success(xhr.responseText)   //把接收的数据暴露到方法中，方便处理
+            }
+            xhr.onerror = function () {
+                alert("服务器异常")
+            }
+        }
+//        xhr.setRequestHeader("content-type", "application/x-www-form-unlencoded")  //更改请起头测试
+        if (method === "GET") {
+            xhr.send()
+        }
+        else if (method === "POST") {
+//            console.log(dataStr)
+            console.log(sendData)
+            xhr.send($.param(sendData))
+        }
+    }
+
+    var App = {
+        init: function () {
+            this.getInfo()
+        },
+        setBanner: function (music) {
+            var _this = this
+            var model = '<li>'+
+                '<div class="typeImg">'+
+                '<img src="'+ music.cover_small +'"'+
+                'alt=""></div>'+
+                '<div class="info">'+
+                '<span class="typeTitle">'+ music.name +'</span>'+
+                '</div> </li>'
+            return model
+        },
+        getInfo: function () {
+            var _this = this
+            ajax({   //发起请求方法
+                url: 'http://api.jirengu.com/fm/getChannels.php',
+                method: 'GET',
+                success: function (res) {
+                    var musictype = JSON.parse(res).channels
+                    console.log(musictype)
+                    musictype.forEach(function (t) {
+                        $(".list ul").append(_this.setBanner(t))    //请求到的数据渲染到列表
+                    })
+                }
+            })
+        }
+    }
+    App.init()    //运行app
+
+    //做到请求信息返回并且渲染到窗口，下一步需求进行轮播排版，目标做成一个轮播选择音乐类型的播放器
+
+
+</script>
+</body>
+</html>

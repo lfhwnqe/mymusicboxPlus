@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.js"></script>
+    <title>Document</title>
+</head>
+<body>
+<ul>
+    <li>1</li>
+</ul>
+<script>
+        var $node = $("ul li")
+    var musiclist = ["7", '2', '3', '4', '5', '6']
+    var selector = function (t) {
+        var template = '<li>'+ t +'</li>'
+        return template
+    }
+
+    musiclist.forEach(function (t) {
+        $node.append(selector(t))
+//        console.log(template)
+    })
+</script>
+</body>
+</html>
